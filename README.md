@@ -1,12 +1,15 @@
-Key Features
+This PR enhances the VisTraceExtension module to add functionality for simulating sunlight in Garry's Mod at a fixed point in the sky, representing 4:00 PM. The implementation provides accurate sun position calculation and high-performance ray tracing for shadow detection.
 
-    Accurate Sun Position: Calculates 4:00 PM sun position at 240° azimuth (west-southwest) and 45° elevation above horizon
-    High-Performance Ray Tracing: Integrates with VisTrace's CPU-based AccelStruct for efficient mesh and entity intersection testing
-    Shadow Detection: Performs ray tracing from any point toward the sun to determine if the point is in shadow
-    Lua Integration: Exposes SimulateSunlight function globally in Garry's Mod scripts
+## Key Features
 
-Usage Example
+- **Accurate Sun Position**: Calculates 4:00 PM sun position at 240° azimuth (west-southwest) and 45° elevation above horizon
+- **High-Performance Ray Tracing**: Integrates with VisTrace's CPU-based AccelStruct for efficient mesh and entity intersection testing
+- **Shadow Detection**: Performs ray tracing from any point toward the sun to determine if the point is in shadow
+- **Lua Integration**: Exposes `SimulateSunlight` function globally in Garry's Mod scripts
 
+## Usage Example
+
+```lua
 -- Create acceleration structure with world geometry
 local accel = vistrace.CreateAccel({}, true)
 
@@ -21,21 +24,22 @@ print("In shadow:", result.inShadow)
 if result.distance then
     print("Distance to obstruction:", result.distance)
 end
+```
 
-Technical Implementation
+## Technical Implementation
 
 The function performs the following operations:
 
-    Sun Direction Calculation: Converts spherical coordinates (azimuth 240°, elevation 45°) to a unit vector in Source engine coordinate system
-    Ray Tracing: Uses AccelStruct:Traverse to cast a ray from the origin point toward the sun direction
-    Shadow Analysis: Determines lighting intensity based on whether the ray intersects with geometry before reaching the sky
-    Result Packaging: Returns comprehensive lighting data including direction, intensity, shadow status, and obstruction distance
+1. **Sun Direction Calculation**: Converts spherical coordinates (azimuth 240°, elevation 45°) to a unit vector in Source engine coordinate system
+2. **Ray Tracing**: Uses AccelStruct:Traverse to cast a ray from the origin point toward the sun direction
+3. **Shadow Analysis**: Determines lighting intensity based on whether the ray intersects with geometry before reaching the sky
+4. **Result Packaging**: Returns comprehensive lighting data including direction, intensity, shadow status, and obstruction distance
 
-Validation
+## Validation
 
-    Sun position calculation verified mathematically to produce correct unit vector
-    Input validation ensures robust error handling for invalid parameters
-    Duck typing approach for AccelStruct compatibility without breaking encapsulation
-    Build system integration maintains compatibility with existing VisTrace module
+- Sun position calculation verified mathematically to produce correct unit vector
+- Input validation ensures robust error handling for invalid parameters
+- Duck typing approach for AccelStruct compatibility without breaking encapsulation
+- Build system integration maintains compatibility with existing VisTrace module
 
 This implementation provides game developers with an easy-to-use tool for realistic afternoon lighting calculations in Garry's Mod environments, optimized for real-time performance.
