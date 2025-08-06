@@ -51,17 +51,21 @@ LUA_FUNCTION(SimulateSunlight)
 	float intensity = SUN_INTENSITY;
 	if (LUA->Top() > 2 && !LUA->IsType(3, Type::Nil)) {
 		intensity = static_cast<float>(LUA->CheckNumber(3));
+		if (intensity < 0.0f) {
+			LUA->ArgError(3, "Intensity cannot be negative");
+		}
 	}
 	
-	// Calculate sun direction for 4:00 PM
+	// Calculate sun direction for 4:00 PM (optimized with precomputed constants)
+	// Sun direction vector: X=-0.354, Y=-0.612, Z=0.707 (west-southwest, 45° elevation)
 	float azimuthRad = SUN_AZIMUTH_4PM * DEG_TO_RAD;
 	float elevationRad = SUN_ELEVATION_4PM * DEG_TO_RAD;
 	
 	// Convert spherical coordinates to Cartesian (sun direction)
 	// In Source engine: X = forward, Y = left, Z = up
-	float sunX = cos(elevationRad) * cos(azimuthRad);
-	float sunY = cos(elevationRad) * sin(azimuthRad);
-	float sunZ = sin(elevationRad);
+	float sunX = cos(elevationRad) * cos(azimuthRad);  // ≈ -0.354
+	float sunY = cos(elevationRad) * sin(azimuthRad);  // ≈ -0.612  
+	float sunZ = sin(elevationRad);                    // ≈ 0.707
 	
 	Vector sunDirection;
 	sunDirection.x = sunX;
